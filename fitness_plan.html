@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Fitness Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F6F1;
+    --warm-white: #FDFCFA;
+    --ink: #1C1917;
+    --ink-light: #44403C;
+    --ink-muted: #78716C;
+    --accent: #C2410C;
+    --accent-light: #FEF3ED;
+    --accent-mid: #EA580C;
+    --teal: #0D9488;
+    --teal-light: #F0FDFA;
+    --gold: #B45309;
+    --gold-light: #FFFBEB;
+    --border: #E7E2DA;
+    --border-strong: #C9C0B4;
+    --green: #15803D;
+    --green-light: #F0FDF4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 2.5rem 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.12;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.1;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-mid);
+    margin-bottom: .5rem;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    line-height: 1.15;
+    color: var(--warm-white);
+    margin-bottom: .75rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: #FCA882;
+  }
+
+  .hero-meta {
+    font-size: 13px;
+    color: #A8A29E;
+    line-height: 1.6;
+  }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    background: var(--warm-white);
+    padding: .75rem .5rem;
+    text-align: center;
+  }
+
+  .stat-cell strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .stat-cell span {
+    font-size: 10px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .phase-nav {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .phase-nav::-webkit-scrollbar { display: none; }
+
+  .phase-btn {
+    flex-shrink: 0;
+    padding: .85rem 1.1rem;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .phase-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .phase-content { display: none; }
+  .phase-content.visible { display: block; }
+
+  .container { padding: 1.25rem 1.25rem 3rem; max-width: 680px; margin: 0 auto; }
+
+  .phase-header {
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.25rem;
+    background: var(--warm-white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .phase-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin-bottom: .25rem;
+  }
+
+  .phase-header p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: .75rem;
+  }
+
+  .phase-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--cream);
+    color: var(--ink-light);
+    border: 1px solid var(--border);
+  }
+
+  .chip.accent { background: var(--accent-light); color: var(--accent); border-color: #FDBA9A; }
+
+  .week-schedule {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .day-tile {
+    border-radius: 8px;
+    padding: 6px 4px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .day-tile.rest { background: var(--cream); }
+  .day-tile.workout { background: var(--warm-white); border-color: var(--border-strong); }
+  .day-tile.optional { background: var(--teal-light); border-color: #99F6E4; }
+
+  .day-name {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+
+  .day-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+
+  .day-label {
+    font-size: 9px;
+    color: var(--ink-light);
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .section-heading {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 1.5rem 0 .75rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-heading .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-strength { background: var(--accent); }
+  .dot-flex { background: var(--teal); }
+  .dot-cardio { background: var(--gold); }
+
+  .exercise-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1rem 1rem 1rem;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .ex-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .ex-icon.strength { background: var(--accent-light); }
+  .ex-icon.flex { background: var(--teal-light); }
+  .ex-icon.cardio { background: var(--gold-light); }
+
+  .ex-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .ex-detail {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .ex-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--accent-light);
+    border: 1px solid #FDBA9A;
+    transition: background .15s;
+  }
+
+  .ex-link:hover { background: #FDE8DC; }
+
+  .tip-card {
+    background: var(--green-light);
+    border: 1px solid #BBF7D0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+    font-size: 13px;
+    color: var(--green);
+    line-height: 1.6;
+  }
+
+  .tip-card strong { font-weight: 600; }
+
+  .warning-card {
+    background: var(--gold-light);
+    border: 1px solid #FDE68A;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: var(--gold);
+    line-height: 1.6;
+  }
+
+  /* Equipment tab */
+  .equip-section { margin-bottom: 1.5rem; }
+
+  .equip-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: .75rem;
+  }
+
+  .equip-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .equip-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .equip-sub { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge.have { background: var(--green-light); color: var(--green); border: 1px solid #BBF7D0; }
+  .badge.buy { background: var(--accent-light); color: var(--accent); border: 1px solid #FDBA9A; }
+  .badge.optional { background: var(--gold-light); color: var(--gold); border: 1px solid #FDE68A; }
+
+  .budget-bar {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .budget-label { font-size: 13px; color: var(--ink-muted); margin-bottom: .5rem; }
+  .budget-amount { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .budget-sub { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+
+  .progress-track {
+    height: 6px;
+    background: var(--cream);
+    border-radius: 3px;
+    margin-top: .75rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    width: 70%;
+  }
+
+  /* Notes tab */
+  .notes-intro {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .note-block {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 10px;
+  }
+
+  .note-block h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: .5rem;
+  }
+
+  .note-block p, .note-block li {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.65;
+  }
+
+  .note-block ul { padding-left: 1.25rem; }
+  .note-block li { margin-bottom: 4px; }
+
+  .weight-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: .5rem;
+  }
+
+  .weight-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: .4rem .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .weight-table td {
+    padding: .5rem .5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+  }
+
+  .weight-table tr:last-child td { border-bottom: none; }
+
+  .ok { color: var(--green); font-weight: 500; }
+  .caution { color: var(--accent); font-weight: 500; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 12px;
+    color: var(--ink-muted);
+    border-top: 1px solid var(--border);
+    background: var(--warm-white);
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">12-Week Home Fitness Plan</div>
+  <h1>Your <em>personal</em><br>training plan</h1>
+  <p class="hero-meta">30F · 130 lbs · Home workout · No injuries<br>Goal: strength + flexibility · $200 equipment budget</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-cell"><strong>3→5</strong><span>days/week</span></div>
+  <div class="stat-cell"><strong>12 wks</strong><span>program</span></div>
+  <div class="stat-cell"><strong>30–55</strong><span>min/session</span></div>
+  <div class="stat-cell"><strong>3 phases</strong><span>progression</span></div>
+</div>
+
+<nav class="phase-nav">
+  <button class="phase-btn active" onclick="showPhase('p1', this)">Phase 1</button>
+  <button class="phase-btn" onclick="showPhase('p2', this)">Phase 2</button>
+  <button class="phase-btn" onclick="showPhase('p3', this)">Phase 3</button>
+  <button class="phase-btn" onclick="showPhase('equip', this)">Equipment</button>
+  <button class="phase-btn" onclick="showPhase('notes', this)">Notes</button>
+</nav>
+
+<!-- PHASE 1 -->
+<div id="p1" class="phase-content visible">
+<div class="container">
+
+  <div class="phase-header">
+    <h2>Phase 1 — Foundation</h2>
+    <p>Reintroduce your body to exercise. Focus on form, not intensity. By week 4 things should feel comfortable — that's a sign the plan is working, not that you need to push harder yet.</p>
+    <div class="phase-chips">
+      <span class="chip accent">Weeks 1–4</span>
+      <span class="chip">3 days/week</span>
+      <span class="chip">30–35 min</span>
+      <span class="chip">Low–moderate intensity</span>
+    </div>
+  </div>
+
+  <div class="week-schedule">
+    <div class="day-tile workout"><div class="day-name">Mon</div><span class="day-icon">💪</span><div class="day-label">Strength</div></div>
+    <div class="day-tile rest"><div class="day-name">Tue</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+    <div class="day-tile workout"><div class="day-name">Wed</div><span class="day-icon">🧘</span><div class="day-label">Flex + Core</div></div>
+    <div class="day-tile rest"><div class="day-name">Thu</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+    <div class="day-tile workout"><div class="day-name">Fri</div><span class="day-icon">🚴</span><div class="day-label">Cardio</div></div>
+    <div class="day-tile optional"><div class="day-name">Sat</div><span class="day-icon">🚶</span><div class="day-label">Walk (opt)</div></div>
+    <div class="day-tile rest"><div class="day-name">Sun</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-strength"></span>Monday — Full body strength (30–35 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Bodyweight squats</div>
+      <div class="ex-detail">3 sets × 10 reps · 60s rest · No weight needed · Foundation movement</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=aclHkVaku9U" target="_blank">▶ Watch: Perfect squat form (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Dumbbell bent-over row</div>
+      <div class="ex-detail">3 sets × 10 reps each side · 15 lb dumbbell · 60s rest</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=pYcpY20QaE8" target="_blank">▶ Watch: Single arm dumbbell row (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Incline push-ups</div>
+      <div class="ex-detail">3 sets × 8–10 reps · Use a chair or counter · 60s rest</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=4dF1DOWzf20" target="_blank">▶ Watch: Incline push-up tutorial (3 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Dumbbell Romanian deadlift</div>
+      <div class="ex-detail">3 sets × 10 reps · 15 lb dumbbell · Hamstring focus · Hip hinge movement</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=jEy_czb3RKA" target="_blank">▶ Watch: Dumbbell RDL tutorial (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Kettlebell goblet squat</div>
+      <div class="ex-detail">3 sets × 10 reps · 10 lb kettlebell at chest · Deeper range than bodyweight squat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=MxsFDhcyFyE" target="_blank">▶ Watch: Goblet squat tutorial (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Glute bridges</div>
+      <div class="ex-detail">3 sets × 15 reps · Bodyweight · On yoga mat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=8bbE64NuDTU" target="_blank">▶ Watch: Glute bridge form (4 min)</a>
+    </div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-flex"></span>Wednesday — Flexibility + Core (30 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Beginner yoga flow</div>
+      <div class="ex-detail">20 min full video · Full-body mobility · Yoga mat · Follow along</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=v7AYKMP6rOE" target="_blank">▶ Watch: 20-min beginner yoga (Yoga with Adriene)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Dead bug</div>
+      <div class="ex-detail">3 sets × 8 reps each side · Core stability · Slow and controlled · Yoga mat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=4XLEnwUr1d8" target="_blank">▶ Watch: Dead bug exercise (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Bird dog</div>
+      <div class="ex-detail">3 sets × 8 reps each side · Core + balance · On hands and knees</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=wiFNA3sqjCA" target="_blank">▶ Watch: Bird dog tutorial (4 min)</a>
+    </div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-cardio"></span>Friday — Cardio (30 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon cardio">🚴</div>
+    <div>
+      <div class="ex-name">Exercise bike — steady state</div>
+      <div class="ex-detail">25 min at comfortable conversational pace · Low resistance · Zone 2 heart rate</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=kZmDT_I9nSk" target="_blank">▶ Watch: Beginner stationary bike workout (25 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon cardio">🚴</div>
+    <div>
+      <div class="ex-name">Jump rope intervals</div>
+      <div class="ex-detail">5 min after bike · 30s on / 30s off · 5 rounds · End of session</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=FJmRQ5iTXKE" target="_blank">▶ Watch: Beginner jump rope tutorial (8 min)</a>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <strong>Phase 1 focus:</strong> Learn the movements, not the intensity. If something feels easy by week 3, that's the plan working — you'll progress in Phase 2. Watch each form video at least once before your first session.
+  </div>
+
+</div>
+</div>
+
+<!-- PHASE 2 -->
+<div id="p2" class="phase-content">
+<div class="container">
+
+  <div class="phase-header">
+    <h2>Phase 2 — Build</h2>
+    <p>Add a fourth day and split your training into upper and lower body sessions. You should be feeling the difference between a hard set and an impossible one by now.</p>
+    <div class="phase-chips">
+      <span class="chip accent">Weeks 5–8</span>
+      <span class="chip">4 days/week</span>
+      <span class="chip">40–45 min</span>
+      <span class="chip">Moderate intensity</span>
+    </div>
+  </div>
+
+  <div class="week-schedule">
+    <div class="day-tile workout"><div class="day-name">Mon</div><span class="day-icon">💪</span><div class="day-label">Upper</div></div>
+    <div class="day-tile rest"><div class="day-name">Tue</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+    <div class="day-tile workout"><div class="day-name">Wed</div><span class="day-icon">🦵</span><div class="day-label">Lower</div></div>
+    <div class="day-tile rest"><div class="day-name">Thu</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+    <div class="day-tile workout"><div class="day-name">Fri</div><span class="day-icon">🔥</span><div class="day-label">HIIT + Core</div></div>
+    <div class="day-tile workout"><div class="day-name">Sat</div><span class="day-icon">🧘</span><div class="day-label">Yoga</div></div>
+    <div class="day-tile rest"><div class="day-name">Sun</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-strength"></span>Monday — Upper body strength (40–45 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Push-ups (standard or knee)</div>
+      <div class="ex-detail">3 sets × 10–12 reps · Progress from Phase 1 incline push-ups</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=IODxDxX7oi4" target="_blank">▶ Watch: Perfect push-up form (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Dumbbell shoulder press</div>
+      <div class="ex-detail">3 sets × 12 reps · Start with 10 lb kettlebell if 15 lbs feels too heavy overhead</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=qEwKCR5JCog" target="_blank">▶ Watch: Dumbbell shoulder press (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Bicep curl + overhead tricep extension (superset)</div>
+      <div class="ex-detail">3 sets × 12 reps each · Use 10 lb kettlebell · No rest between the two, 60s after</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=av7-8igSXTs" target="_blank">▶ Watch: Arm superset workout (12 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Renegade rows</div>
+      <div class="ex-detail">3 sets × 8 reps each side · 15 lb dumbbell · Core + back compound movement</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=Hvj4V0MKGRA" target="_blank">▶ Watch: Renegade row tutorial (4 min)</a>
+    </div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-strength"></span>Wednesday — Lower body strength (40–45 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Goblet squat — progressed</div>
+      <div class="ex-detail">3 sets × 12 reps · 15 lb dumbbell at chest · Deeper range than Phase 1</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=MxsFDhcyFyE" target="_blank">▶ Watch: Goblet squat tutorial (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Reverse lunges</div>
+      <div class="ex-detail">3 sets × 10 reps each leg · Bodyweight weeks 5–6 · Add 10 lb kettlebell weeks 7–8</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=xrPteyQLGAo" target="_blank">▶ Watch: Reverse lunge form (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Single-leg glute bridge</div>
+      <div class="ex-detail">3 sets × 12 reps each side · More challenging than Phase 1 version · Yoga mat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=Dn0EJGmZBhA" target="_blank">▶ Watch: Single leg glute bridge (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon cardio">🚴</div>
+    <div>
+      <div class="ex-name">Jump rope intervals (finisher)</div>
+      <div class="ex-detail">10 min · 40s on / 20s rest · Cardio finisher at end of lower body session</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=1BZM2Vre5oc" target="_blank">▶ Watch: 10-min jump rope HIIT (10 min)</a>
+    </div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-cardio"></span>Friday — HIIT + Core (40 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon cardio">🔥</div>
+    <div>
+      <div class="ex-name">Beginner HIIT cardio</div>
+      <div class="ex-detail">25 min full follow-along video · No equipment · Heather Robertson</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=ml6cT4AZdqI" target="_blank">▶ Watch: 25-min beginner HIIT (Heather Robertson)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Plank progression</div>
+      <div class="ex-detail">3 × 20–30 sec holds · Build from 15s in week 5 · Add time each week · Yoga mat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=yeKv5oX_6GY" target="_blank">▶ Watch: Plank form and progression (5 min)</a>
+    </div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-flex"></span>Saturday — Yoga & Flexibility (30–40 min)</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Intermediate yoga flow</div>
+      <div class="ex-detail">30–40 min · Active recovery · Do this on the mat at whatever pace feels right</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=b1H3xO3x_Js" target="_blank">▶ Watch: 30-min yoga for flexibility (Yoga with Adriene)</a>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <strong>Phase 2 focus:</strong> The 10 lb kettlebell earns its place here — use it for shoulder press, curls, and triceps where 15 lbs is still too heavy overhead. The 15 lb dumbbell handles rows, RDLs, and goblet squats.
+  </div>
+
+</div>
+</div>
+
+<!-- PHASE 3 -->
+<div id="p3" class="phase-content">
+<div class="container">
+
+  <div class="phase-header">
+    <h2>Phase 3 — Strengthen</h2>
+    <p>Five days, heavier loads, and more complex movement patterns. By week 9 you'll notice real changes in how strong and capable you feel day-to-day.</p>
+    <div class="phase-chips">
+      <span class="chip accent">Weeks 9–12+</span>
+      <span class="chip">4–5 days/week</span>
+      <span class="chip">45–55 min</span>
+      <span class="chip">Moderate–high intensity</span>
+    </div>
+  </div>
+
+  <div class="week-schedule">
+    <div class="day-tile workout"><div class="day-name">Mon</div><span class="day-icon">💪</span><div class="day-label">Upper push</div></div>
+    <div class="day-tile workout"><div class="day-name">Tue</div><span class="day-icon">🦵</span><div class="day-label">Lower</div></div>
+    <div class="day-tile optional"><div class="day-name">Wed</div><span class="day-icon">🧘</span><div class="day-label">Yoga/Rest</div></div>
+    <div class="day-tile workout"><div class="day-name">Thu</div><span class="day-icon">💪</span><div class="day-label">Upper pull</div></div>
+    <div class="day-tile workout"><div class="day-name">Fri</div><span class="day-icon">🔥</span><div class="day-label">Full body</div></div>
+    <div class="day-tile workout"><div class="day-name">Sat</div><span class="day-icon">🚴</span><div class="day-label">Cardio</div></div>
+    <div class="day-tile rest"><div class="day-name">Sun</div><span class="day-icon">😴</span><div class="day-label">Rest</div></div>
+  </div>
+
+  <div class="section-heading"><span class="dot dot-strength"></span>Key new exercises in Phase 3</div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Full push-ups + pike push-ups</div>
+      <div class="ex-detail">4 sets × 12 reps · Progressed from Phase 2 · Shoulder strength focus</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=pkNvMEcpMkk" target="_blank">▶ Watch: Pike push-up tutorial (4 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Bulgarian split squat</div>
+      <div class="ex-detail">3 sets × 10 each leg · Hold 15 lb dumbbells · Most challenging lower body move in plan</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=2C-uNgKwPLE" target="_blank">▶ Watch: Bulgarian split squat form (5 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Resistance band pull-aparts + rows</div>
+      <div class="ex-detail">4 sets × 15 reps · Primary use case for resistance bands · Back and posture focus</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=QvSRZ_JSaYY" target="_blank">▶ Watch: Resistance band back workout (15 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon cardio">🔥</div>
+    <div>
+      <div class="ex-name">Dumbbell full body HIIT</div>
+      <div class="ex-detail">30–40 min full video · Combines strength + cardio · Friday session</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=UBMk30rjy0o" target="_blank">▶ Watch: 30-min dumbbell full body (Heather Robertson)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon strength">🏋️</div>
+    <div>
+      <div class="ex-name">Kettlebell swing</div>
+      <div class="ex-detail">3 sets × 15 reps · 10 lb kettlebell · Full-body power + cardio in one movement</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=YSxHifyI6s8" target="_blank">▶ Watch: Kettlebell swing tutorial (6 min)</a>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="ex-icon flex">🧘</div>
+    <div>
+      <div class="ex-name">Intermediate yoga flow</div>
+      <div class="ex-detail">40 min · Wednesday or Saturday active recovery · Yoga mat</div>
+      <a class="ex-link" href="https://www.youtube.com/watch?v=sTANio_2E0Q" target="_blank">▶ Watch: 40-min intermediate yoga (Yoga with Adriene)</a>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <strong>Phase 3 focus:</strong> If the 15 lb dumbbell feels genuinely light on squats and rows, consider buying a heavier pair (20–25 lb). You've earned it, and you'll feel the difference immediately.
+  </div>
+
+</div>
+</div>
+
+<!-- EQUIPMENT -->
+<div id="equip" class="phase-content">
+<div class="container">
+
+  <div class="equip-section">
+    <div class="equip-heading">What you already have</div>
+
+    <div class="equip-card">
+      <div><div class="equip-name">Yoga mat</div><div class="equip-sub">All phases — floor work, stretching, core exercises</div></div>
+      <span class="badge have">✓ Have it</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">15 lb dumbbell</div><div class="equip-sub">All phases — rows, RDLs, goblet squats</div></div>
+      <span class="badge have">✓ Have it</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">10 lb kettlebell</div><div class="equip-sub">All phases — goblet squats, upper body work, swings (Phase 3)</div></div>
+      <span class="badge have">✓ Have it</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">Jump rope</div><div class="equip-sub">All phases — cardio intervals and finishers</div></div>
+      <span class="badge have">✓ Have it</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">Exercise bicycle</div><div class="equip-sub">All phases — steady state cardio and HIIT riding</div></div>
+      <span class="badge have">✓ Have it</span>
+    </div>
+  </div>
+
+  <div class="equip-section">
+    <div class="equip-heading">Recommended purchases</div>
+
+    <div class="equip-card">
+      <div><div class="equip-name">Second 15 lb dumbbell</div><div class="equip-sub">~$20–30 · Buy before Phase 2 · Unlocks bilateral exercises</div></div>
+      <span class="badge buy">Buy first</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">Resistance band set (5-band)</div><div class="equip-sub">~$20–30 · Buy before Phase 3 · Essential for pulling exercises</div></div>
+      <span class="badge buy">Phase 2–3</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">Heavier dumbbell pair (20–25 lb)</div><div class="equip-sub">~$40–60 · Buy when 15 lbs feels genuinely easy on squats and rows</div></div>
+      <span class="badge buy">Phase 3</span>
+    </div>
+    <div class="equip-card">
+      <div><div class="equip-name">Foam roller</div><div class="equip-sub">~$15–25 · Recovery and myofascial release between sessions</div></div>
+      <span class="badge optional">Optional</span>
+    </div>
+  </div>
+
+  <div class="budget-bar">
+    <div class="budget-label">Estimated total spend</div>
+    <div class="budget-amount">$95–145</div>
+    <div class="budget-sub">Well within your $200 budget, with room for heavier dumbbells when ready</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div style="font-size:11px; color:var(--ink-muted); margin-top:4px;">~70% of budget used · $55–105 remaining</div>
+  </div>
+
+  <div class="tip-card" style="margin-top:1rem;">
+    <strong>Buy order:</strong> Start with just the second 15 lb dumbbell and the resistance band set. Only add heavier weights when the current ones feel genuinely easy — not sooner. Your joints and tendons adapt more slowly than your muscles.
+  </div>
+
+</div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="phase-content">
+<div class="container">
+
+  <p class="notes-intro">Key guidance gathered from our conversation — the things worth re-reading before you start each new phase.</p>
+
+  <div class="note-block">
+    <h3>Weight selection — what to use and when</h3>
+    <table class="weight-table">
+      <tr><th>Exercise</th><th>Phase 1</th><th>Phase 2+</th></tr>
+      <tr><td>Squats (goblet)</td><td class="ok">10 lb KB</td><td class="ok">15 lb DB</td></tr>
+      <tr><td>Bent-over rows</td><td class="ok">15 lb DB</td><td class="ok">15 lb DB</td></tr>
+      <tr><td>Romanian deadlift</td><td class="ok">15 lb DB</td><td class="ok">15 lb DB</td></tr>
+      <tr><td>Shoulder press</td><td class="caution">10 lb KB</td><td class="caution">10–15 lb</td></tr>
+      <tr><td>Bicep curls</td><td class="caution">10 lb KB</td><td class="ok">10–15 lb</td></tr>
+      <tr><td>Tricep extension</td><td class="caution">10 lb KB</td><td class="ok">10–15 lb</td></tr>
+      <tr><td>Glute bridges</td><td class="ok">Bodyweight</td><td class="ok">Add weight</td></tr>
+      <tr><td>Reverse lunges</td><td class="ok">Bodyweight</td><td class="ok">10 lb KB</td></tr>
+    </table>
+  </div>
+
+  <div class="note-block">
+    <h3>The honest rule of thumb for weight</h3>
+    <p>You should complete all reps with good form, feeling challenged on reps 8–10, but never feeling your form break down. If you're swinging, shrugging, or holding your breath to finish a rep — the weight is too heavy.</p>
+  </div>
+
+  <div class="note-block">
+    <h3>Why 15 lbs is too heavy for some upper body moves</h3>
+    <p>The shoulders, biceps, and triceps are small muscle groups that are very commonly undertrained. Pressing 15 lbs overhead with no training history risks compromising form and straining the shoulder joint. Use the 10 lb kettlebell for these in Phase 1. By Phase 2 you'll likely be ready for 15 lbs.</p>
+  </div>
+
+  <div class="note-block">
+    <h3>The 10 lb kettlebell — where it fits</h3>
+    <ul>
+      <li>Goblet squats — its best exercise, hold by the horns at chest height</li>
+      <li>Upper body isolation work (curls, shoulder press, triceps) — more appropriate starting weight than 15 lbs</li>
+      <li>Kettlebell deadlift — great intro to hip-hinge before RDLs</li>
+      <li>Kettlebell swings — added in Phase 3, one of the best full-body moves you can do at home</li>
+    </ul>
+  </div>
+
+  <div class="note-block">
+    <h3>What to track</h3>
+    <p>Keep a simple note on your phone after each session — how many reps, and how it felt on a scale of 1–10. When a workout consistently feels like a 4–5 out of 10 in effort, you're ready to add reps, reduce rest time, or move to the next phase.</p>
+  </div>
+
+  <div class="note-block">
+    <h3>Schedule notes</h3>
+    <ul>
+      <li>All sessions fit outside 9–5 — mornings, evenings, or weekends</li>
+      <li>Phase 1: Mon / Wed / Fri — never two days back to back</li>
+      <li>Phase 2 adds Saturday yoga as active recovery</li>
+      <li>Phase 3 adds Tuesday — the only weekday addition</li>
+      <li>Sunday is always full rest, every phase</li>
+    </ul>
+  </div>
+
+  <div class="warning-card">
+    <strong>Before Phase 1, week 1:</strong> Watch the form video for each strength exercise before your first session. Watch them again after your first week — you'll catch things you missed the first time.
+  </div>
+
+</div>
+</div>
+
+<footer>
+  Generated with Claude · Your personal 12-week home fitness plan<br>
+  Always listen to your body — if something hurts (not just burns), stop and rest.
+</footer>
+
+<script>
+function showPhase(id, btn) {
+  document.querySelectorAll('.phase-content').forEach(p => p.classList.remove('visible'));
+  document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
